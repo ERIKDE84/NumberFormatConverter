@@ -1,4 +1,36 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+typedef struct _element {
+    int i;
+    struct _element *next;
+}ELEMENT, *EP;
+
+void prt_bin(EP first){
+    if(first->next->next){
+        prt_bin(first->next);
+    }
+    printf("%d", first->i);
+}
+
+EP newElement(int i){
+    EP p = malloc( sizeof(ELEMENT) );
+    if(p){
+        p->i = i; p->next = 0;
+    }
+    return p;
+}
+
+void insertNum(int i, EP *ptr){
+    EP p = newElement(i);
+    if(p){
+        while((*ptr)->next){
+            ptr = & (*ptr)->next;
+        }
+        (*ptr)->i = p->i;
+        (*ptr)->next = p;
+    }
+}
 
 void getFormats(int *in_ptr, int *out_ptr){
     printf("\n1: decimal\n"
@@ -54,8 +86,9 @@ int main(int argc, char **argv){
     int in = 0, out = 0;
     getFormats(& in, & out);
 
-    // 1. need to import List features
-    // 2. get the input number
+    
+
+    // 2. get the input number --> maybe import list?
     // 3. differentiate between different conversion needs 
     // 4. the necessary conversions
     // 5. update prtOutput()
