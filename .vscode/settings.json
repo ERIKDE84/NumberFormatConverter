@@ -2,6 +2,8 @@
     "files.associations": {
         "stdio.h": "c",
         "linkedlist.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "converter.h": "c",
+        "complex": "c"
     }
 }

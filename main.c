@@ -1,56 +1,45 @@
+#include "src/linkedList.h"
+#include "src/converter.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "src/linkedList.h"
+#include <string.h>
 
-void getFormats(int *in_ptr, int *out_ptr){
-    printf("\n1: decimal\n"
-           "2: binary\n"
-           "3: octal\n"
-           "4: hexadecimal\n\n");    
-    
+void getFormat(double *base, char *str){
     while (1){
-        printf("Choose an input format --> ");
-        scanf("%d", in_ptr);
-
-        if(*in_ptr > 0 && *in_ptr < 5){
+        scanf("%lf", base);
+        if(*base > 0 && *base < 5){
             break;
         } else {
-            printf("Invalid input - please try again!\n");
+            printf("Invalid input - please try again!\n--> ");
         }
     }
 
-    while (1){
-        printf("Choose an output format --> ");
-        scanf("%d", out_ptr);
-
-        if(*out_ptr > 0 && *out_ptr < 5){
-            break;
-        } else {
-            printf("Invalid input - please try again!\n");
-        }
-    }
-}
-
-char *matchToFormat(int i){
+    int i = *base;
     switch (i){
         case 1:
-            return "Decimal";
+            *base = 10.0; 
+            strcpy(str, "Decimal"); 
+            break;
         case 2:
-            return "Binary";
+            *base = 2.0; 
+            strcpy(str, "Binary"); 
+            break;
         case 3:
-            return "Octal";
+            *base = 8.0; 
+            strcpy(str, "Octal");
+            break;
         case 4:
-            return "Hexadecimal";
-        default:
-            return "No format identified";
+            *base = 16.0; 
+            strcpy(str, "Hexadecimal"); 
+            break;
     }
 }
 
-void prtOutput(int *in_ptr, int *out_ptr, EP in, EP out){
-    printf("\nInput - %s: ", matchToFormat(*in_ptr));
+void prtOutput(char *inStr, char *outStr, EP in, EP out){
+    printf("\nInput - %s: ", inStr);
     prtList(in->next);
-    printf("Output - %s: ", matchToFormat(*out_ptr));
-    prtList(out);
+    printf("Output - %s: ", outStr);
+    prtList(out->next);
     printf("\n\n");
 }
 
@@ -68,14 +57,26 @@ EP getNumber(){
 }
 
 int main(int argc, char **argv){
-    int in_Format = 0, out_Format = 0;
-    EP in_Number, out_Number = newElement('?');
+    double inpBase = 0, outBase = 0, exp = 0;
+    char inStr[12], outStr[12];
+    EP inpNum, outNum;
+    long sum = 0;
 
-    getFormats(& in_Format, & out_Format);
-    in_Number = getNumber(); 
+    printf("\n1: decimal\n" "2: binary\n" "3: octal\n" "4: hexadecimal\n\n");   //Get Inputs
 
-    //  differentiate between different conversion needs 
-    //  compute conversions
+    printf("Choose an input format --> ");
+    getFormat(& inpBase, inStr);
 
-    prtOutput(& in_Format, & out_Format, in_Number, out_Number);
+    printf("Choose an output format --> ");
+    getFormat(& outBase, outStr);
+
+    inpNum = getNumber();
+
+    if(inpBase == outBase){
+        prtOutput(inStr, outStr, inpNum, inpNum);
+    } else {
+        sum = toDecimal(inpNum->next, inpBase, & exp);  //convert to Decimal 
+        outNum = toAny(sum, outBase);                   //convert to desired format
+        prtOutput(inStr, outStr, inpNum, outNum);
+    }
 }
