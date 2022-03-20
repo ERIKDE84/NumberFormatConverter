@@ -1,36 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct _element {
-    int i;
-    struct _element *next;
-}ELEMENT, *EP;
-
-void prt_bin(EP first){
-    if(first->next->next){
-        prt_bin(first->next);
-    }
-    printf("%d", first->i);
-}
-
-EP newElement(int i){
-    EP p = malloc( sizeof(ELEMENT) );
-    if(p){
-        p->i = i; p->next = 0;
-    }
-    return p;
-}
-
-void insertNum(int i, EP *ptr){
-    EP p = newElement(i);
-    if(p){
-        while((*ptr)->next){
-            ptr = & (*ptr)->next;
-        }
-        (*ptr)->i = p->i;
-        (*ptr)->next = p;
-    }
-}
+#include "src/linkedList.h"
 
 void getFormats(int *in_ptr, int *out_ptr){
     printf("\n1: decimal\n"
@@ -59,7 +29,6 @@ void getFormats(int *in_ptr, int *out_ptr){
             printf("Invalid input - please try again!\n");
         }
     }
-    printf("\n");
 }
 
 char *matchToFormat(int i){
@@ -73,25 +42,40 @@ char *matchToFormat(int i){
         case 4:
             return "Hexadecimal";
         default:
-            return "kein case erfuellt";
+            return "No format identified";
     }
 }
 
-void prtOutput(int *in_ptr, int *out_ptr){
-    printf("Input - %s: \n", matchToFormat(*in_ptr));
-    printf("Output - %s: \n\n", matchToFormat(*out_ptr));
+void prtOutput(int *in_ptr, int *out_ptr, EP in, EP out){
+    printf("\nInput - %s: ", matchToFormat(*in_ptr));
+    prtList(in->next);
+    printf("Output - %s: ", matchToFormat(*out_ptr));
+    prtList(out);
+    printf("\n\n");
+}
+
+EP getNumber(){
+    char c; 
+    EP p = newElement('!');
+    
+    printf("Enter your number: ");
+    c = getchar();
+    while( (c = getchar()) != '\n' && c != EOF && 
+           ( (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f') )){
+            insertChar(c, p);
+    }
+    return p;
 }
 
 int main(int argc, char **argv){
-    int in = 0, out = 0;
-    getFormats(& in, & out);
+    int in_Format = 0, out_Format = 0;
+    EP in_Number, out_Number = newElement('?');
 
-    
+    getFormats(& in_Format, & out_Format);
+    in_Number = getNumber(); 
 
-    // 2. get the input number --> maybe import list?
-    // 3. differentiate between different conversion needs 
-    // 4. the necessary conversions
-    // 5. update prtOutput()
+    //  differentiate between different conversion needs 
+    //  compute conversions
 
-    prtOutput(& in, & out);
+    prtOutput(& in_Format, & out_Format, in_Number, out_Number);
 }
